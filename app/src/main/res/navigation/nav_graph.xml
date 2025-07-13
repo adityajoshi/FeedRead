@@ -8,21 +8,43 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="xyz.simpletools.feedread.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="RSS Feeds"
         tools:layout="@layout/fragment_first">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
     </fragment>
+    
     <fragment
         android:id="@+id/SecondFragment"
         android:name="xyz.simpletools.feedread.SecondFragment"
-        android:label="@string/second_fragment_label"
+        android:label="Articles"
         tools:layout="@layout/fragment_second">
 
+        <argument
+            android:name="feedUrl"
+            app:argType="string" />
+        <argument
+            android:name="feedName"
+            app:argType="string" />
+
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_SecondFragment_to_ArticleDetailFragment"
+            app:destination="@id/ArticleDetailFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/ArticleDetailFragment"
+        android:name="xyz.simpletools.feedread.ArticleDetailFragment"
+        android:label="Article"
+        tools:layout="@layout/fragment_article_detail">
+
+        <argument
+            android:name="articleTitle"
+            app:argType="string" />
+        <argument
+            android:name="articleContent"
+            app:argType="string" />
     </fragment>
 </navigation>
