@@ -15,6 +15,8 @@ import xyz.simpletools.feedread.databinding.FragmentSecondBinding
 import xyz.simpletools.feedread.models.RssArticle
 import xyz.simpletools.feedread.utils.NetworkUtils
 import xyz.simpletools.feedread.utils.RssParser
+import android.content.Intent
+import android.net.Uri
 
 class SecondFragment : Fragment() {
 
@@ -73,12 +75,9 @@ class SecondFragment : Fragment() {
 
     private fun displayArticles(articles: List<RssArticle>) {
         binding.recyclerViewArticles.adapter = ArticleAdapter(articles) { article ->
-            // Navigate to ArticleDetailFragment
-            val action = SecondFragmentDirections.actionSecondFragmentToArticleDetailFragment(
-                articleTitle = article.title,
-                articleContent = article.content.ifEmpty { article.description }
-            )
-            findNavController().navigate(action)
+            // Open article in default web browser
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.link))
+            startActivity(intent)
         }
     }
 
