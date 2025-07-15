@@ -16,13 +16,8 @@ class FirstFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
     private val binding get() = _binding!!
 
-    private val feeds = listOf(
-        RssFeed("BBC News", "http://feeds.bbci.co.uk/news/rss.xml", "Latest news from BBC"),
-        RssFeed("TechCrunch", "https://techcrunch.com/feed/", "Technology news and startup information"),
-        RssFeed("The Verge", "https://www.theverge.com/rss/index.xml", "Technology, science, art, and culture"),
-        RssFeed("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index", "Technology news and analysis"),
-        RssFeed("Engadget", "https://www.engadget.com/rss.xml", "Consumer electronics and technology news")
-    )
+    private val feeds = mutableListOf<RssFeed>()
+    private lateinit var feedAdapter: FeedAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,18 +29,26 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
+        binding.buttonAddFeed.setOnClickListener {
+            val url = binding.editTextFeedUrl.text.toString().trim()
+            if (url.isNotEmpty()) {
+                val feed = RssFeed(url, url) // Using URL as name and url, can be improved
+                feeds.add(feed)
+                feedAdapter.notifyItemInserted(feeds.size - 1)
+                binding.editTextFeedUrl.text?.clear()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
+        feedAdapter = FeedAdapter(feeds) { feed ->
+            val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(feed.url, feed.name)
+            findNavController().navigate(action)
+        }
         binding.recyclerViewFeeds.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = FeedAdapter(feeds) { feed ->
-                // Navigate to SecondFragment with feed data
-                val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(feed.url, feed.name)
-                findNavController().navigate(action)
-            }
+            adapter = feedAdapter
         }
     }
 
